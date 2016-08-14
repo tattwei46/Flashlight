@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
     private RelativeLayout mainLayout;
     private TextView about;
     private String TAG = "FlashLight";
+    private boolean DEBUG = true;
     private Camera camera;
     private Camera.Parameters params;
 
@@ -55,19 +56,20 @@ public class MainActivity extends Activity {
 
         //Ask user permission at runtime
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "checkselfpermission");
+            if (DEBUG)Log.d(TAG, "checkselfpermission");
             hasPermission = false;
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
 
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_ASK_PERMISSIONS);
-                Log.d(TAG, "requestPermission");
+                if (DEBUG)Log.d(TAG, "requestPermission");
             }
         } else {
-            Log.d(TAG,"permission granted");
+            if(DEBUG)Log.d(TAG,"permission granted");
             hasPermission = true;
         }
 
+        //Second time app runs after runtime permission given
         if (hasPermission){
             registerButton();
         }
@@ -80,7 +82,7 @@ public class MainActivity extends Activity {
         btnSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"button triggered");
+                if (DEBUG)Log.d(TAG,"button triggered");
                 if (!isFlashOn){
                     btnSwitch.setText(R.string.offString);
                     setDayMode();
@@ -121,7 +123,7 @@ public class MainActivity extends Activity {
             case REQUEST_CODE_ASK_PERMISSIONS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     hasPermission = true;
-                    Log.d(TAG, "permission granted");
+                    if (DEBUG)Log.d(TAG, "permission granted");
                     registerButton();
                     return;
                 } else {
@@ -159,7 +161,7 @@ public class MainActivity extends Activity {
                 camera = Camera.open();
                 params = camera.getParameters();
             } catch (RuntimeException e) {
-                Log.e(TAG, e.getMessage());
+                if(DEBUG)Log.e(TAG, e.getMessage());
             }
         }
     }
@@ -175,7 +177,7 @@ public class MainActivity extends Activity {
             camera.setParameters(params);
             camera.startPreview();
             isFlashOn = true;
-            Log.d(TAG, "onFlash");
+            if(DEBUG)Log.d(TAG, "onFlash");
         } catch (Exception e){
             e.printStackTrace();
             Toast.makeText(getBaseContext(), "Exception onFlash",
@@ -194,7 +196,7 @@ public class MainActivity extends Activity {
             camera.setParameters(params);
             camera.stopPreview();
             isFlashOn = false;
-            Log.d(TAG, "offFlash");
+            if(DEBUG)Log.d(TAG, "offFlash");
         } catch (Exception e){
             e.printStackTrace();
             Toast.makeText(getBaseContext(), "Exception offFlash",
@@ -205,26 +207,26 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
+        if(DEBUG)Log.d(TAG, "onDestroy");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
+        if(DEBUG)Log.d(TAG, "onPause");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d(TAG, "onRestart");
+        if(DEBUG)Log.d(TAG, "onRestart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
-        Log.d(TAG, "isFlashOn:" + isFlashOn);
+        if(DEBUG)Log.d(TAG, "onResume");
+        if(DEBUG)Log.d(TAG, "isFlashOn:" + isFlashOn);
         if (isFlashOn) {
             getCamera();
             onFlash();
@@ -236,7 +238,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
+        if(DEBUG)Log.d(TAG, "onStart");
         // on starting the app get the camera params
         //getCamera();
     }
@@ -244,7 +246,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop");
+        if(DEBUG)Log.d(TAG, "onStop");
 
         // on stop release the camera
         if (camera != null) {
